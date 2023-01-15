@@ -18,6 +18,8 @@ func main() {
 	restaurants := r.Group("/restaurants")
 	restaurants.POST("", restaurantginrestaurant.CreateRestaurant(db))
 
+	restaurants.DELETE("/:id", restaurantginrestaurant.DeleteRestaurant(db))
+
 	if err := r.Run(); err != nil {
 		return
 	}
