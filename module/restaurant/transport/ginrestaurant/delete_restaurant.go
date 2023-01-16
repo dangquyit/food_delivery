@@ -1,6 +1,7 @@
 package restaurantginrestaurant
 
 import (
+	"fmt"
 	restaurantbusiness "food_delivery/module/restaurant/business"
 	restaurantstorage "food_delivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,9 @@ func DeleteRestaurant(db *gorm.DB) gin.HandlerFunc {
 		bsn := restaurantbusiness.NewDeleteRestaurantBusiness(store)
 
 		if err := bsn.DeleteRestaurant(c.Request.Context(), id); err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err,
+				"error": err.Error(),
 			})
 			return
 		}
