@@ -7,22 +7,22 @@ import (
 	restaurantmodel "food_delivery/module/restaurant/model"
 )
 
-type DeleteRestaurant interface {
+type DeleteRestaurantStore interface {
 	Delete(context context.Context, id int) error
 	Find(context context.Context,
 		condition map[string]interface{},
 		moreKeys ...string) (*restaurantmodel.Restaurant, error)
 }
 
-type deleteRestaurant struct {
-	store DeleteRestaurant
+type deleteRestaurantBusiness struct {
+	store DeleteRestaurantStore
 }
 
-func NewDeleteRestaurantBusiness(store DeleteRestaurant) *deleteRestaurant {
-	return &deleteRestaurant{store: store}
+func NewDeleteRestaurantBusiness(store DeleteRestaurantStore) *deleteRestaurantBusiness {
+	return &deleteRestaurantBusiness{store: store}
 }
 
-func (bsn *deleteRestaurant) DeleteRestaurant(context context.Context, id int) error {
+func (bsn *deleteRestaurantBusiness) DeleteRestaurant(context context.Context, id int) error {
 
 	oldData, err := bsn.store.Find(context, map[string]interface{}{"id": id})
 

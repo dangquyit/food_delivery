@@ -1,16 +1,19 @@
 package restaurantginrestaurant
 
 import (
+	"food_delivery/common"
+	"food_delivery/component/appctx"
 	restaurantbusiness "food_delivery/module/restaurant/business"
 	restaurantmodel "food_delivery/module/restaurant/model"
 	restaurantstorage "food_delivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 )
 
-func CreateRestaurant(db *gorm.DB) gin.HandlerFunc {
+func CreateRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		db := appCtx.GetMainDBConnection()
+
 		var data restaurantmodel.RestaurantCreate
 
 		if err := c.ShouldBind(&data); err != nil {
@@ -30,8 +33,6 @@ func CreateRestaurant(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"data": data,
-		})
+		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.Id))
 	}
 }

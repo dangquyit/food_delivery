@@ -2,16 +2,18 @@ package restaurantginrestaurant
 
 import (
 	"fmt"
+	"food_delivery/common"
+	"food_delivery/component/appctx"
 	restaurantbusiness "food_delivery/module/restaurant/business"
 	restaurantstorage "food_delivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
 
-func DeleteRestaurant(db *gorm.DB) gin.HandlerFunc {
+func DeleteRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		db := appCtx.GetMainDBConnection()
 		id, err := strconv.Atoi(c.Param("id"))
 
 		if err != nil {
@@ -32,9 +34,7 @@ func DeleteRestaurant(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"data": 1,
-		})
+		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
 		return
 	}
 }
