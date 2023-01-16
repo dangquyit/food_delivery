@@ -1,6 +1,10 @@
 package restaurantmodel
 
-import "food_delivery/common"
+import (
+	"errors"
+	"food_delivery/common"
+	"strings"
+)
 
 type Restaurant struct {
 	common.SQLModel `json:",inline"`
@@ -30,3 +34,16 @@ type RestaurantCreate struct {
 func (RestaurantCreate) TableName() string {
 	return Restaurant{}.TableName()
 }
+
+func (data *RestaurantCreate) Validate() error {
+	data.Name = strings.TrimSpace(data.Name)
+	if data.Name == "" {
+		return ErrNameIsEmpty
+	}
+
+	return nil
+}
+
+var (
+	ErrNameIsEmpty = errors.New("name can not be empty")
+)

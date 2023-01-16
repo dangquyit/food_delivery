@@ -17,6 +17,9 @@ func NewCreateRestaurantBusiness(store CreateRestaurantStore) *createRestaurantB
 	return &createRestaurantBusiness{store: store}
 }
 func (bsn *createRestaurantBusiness) CreateRestaurant(context context.Context, data *restaurantmodel.RestaurantCreate) error {
+	if err := data.Validate(); err != nil {
+		return err
+	}
 
 	if err := bsn.store.Create(context, data); err != nil {
 		return err

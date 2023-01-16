@@ -3,7 +3,6 @@ package restaurantbusiness
 import (
 	"context"
 	"errors"
-	"fmt"
 	restaurantmodel "food_delivery/module/restaurant/model"
 )
 
@@ -31,7 +30,6 @@ func (bsn *deleteRestaurantBusiness) DeleteRestaurant(context context.Context, i
 	}
 
 	if oldData.Status == 0 {
-		fmt.Println("Error")
 		return errors.New("data has been deleted")
 	}
 
