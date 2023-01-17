@@ -18,6 +18,10 @@ func (Restaurant) TableName() string {
 	return "restaurants"
 }
 
+func (r *Restaurant) Mask(isAdminOrOwner bool) {
+	r.GenUID(common.DbTypeRestaurant)
+}
+
 type RestaurantUpdate struct {
 	Name *string `json:"name" gorm:"column:name;"`
 	Addr *string `json:"addr" gorm:"column:addr"`
@@ -28,9 +32,13 @@ func (RestaurantUpdate) TableName() string {
 }
 
 type RestaurantCreate struct {
-	Id   int    `json:"id" gorm:"column:id;"`
+	common.SQLModel
 	Name string `json:"name" gorm:"column:name;"`
 	Addr string `json:"addr" gorm:"column:addr"`
+}
+
+func (data *RestaurantCreate) Mask(isAdminOrOwner bool) {
+	data.GenUID(common.DbTypeRestaurant)
 }
 
 func (RestaurantCreate) TableName() string {
