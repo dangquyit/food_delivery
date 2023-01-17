@@ -24,7 +24,7 @@ func NewListRestaurantBusiness(store ListRestaurantStore) *listRestaurantBusines
 func (bsn *listRestaurantBusiness) ListRestaurantBusiness(ctx context.Context, filter *restaurantmodel.Filter, paging *common.Paging) ([]restaurantmodel.Restaurant, error) {
 	var result, err = bsn.store.List(ctx, filter, paging)
 	if err != nil {
-		return nil, err
+		return nil, common.ErrCannotGetEntity(restaurantmodel.EntityName, err)
 	}
 
 	return result, nil

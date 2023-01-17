@@ -2,7 +2,7 @@ package restaurantbusiness
 
 import (
 	"context"
-	"errors"
+	"food_delivery/common"
 	restaurantmodel "food_delivery/module/restaurant/model"
 )
 
@@ -26,15 +26,15 @@ func (bsn *deleteRestaurantBusiness) DeleteRestaurant(context context.Context, i
 	oldData, err := bsn.store.Find(context, map[string]interface{}{"id": id})
 
 	if err != nil {
-		return err
+		return common.ErrCannotGetEntity(restaurantmodel.EntityName, err)
 	}
 
 	if oldData.Status == 0 {
-		return errors.New("data has been deleted")
+		return common.ErrCannotDeleteEntity(restaurantmodel.EntityName, err)
 	}
 
 	if err := bsn.store.Delete(context, id); err != nil {
-		return err
+		return common.ErrCannotDeleteEntity(restaurantmodel.EntityName, err)
 	}
 	return nil
 }
