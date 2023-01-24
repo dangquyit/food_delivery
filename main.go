@@ -22,7 +22,6 @@ func main() {
 	appCtx := appctx.NewAppCtx(db)
 	r.Use(middleware.Recover(appCtx))
 
-	r.Static("/static", "./static")
 	r.POST("/upload", ginupload.UploadImage(appCtx))
 
 	restaurants := r.Group("/restaurants")

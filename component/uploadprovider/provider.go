@@ -1,0 +1,11 @@
+package uploadprovider
+
+import (
+	"context"
+	"food_delivery/common"
+)
+
+type UploadProvider interface {
+	SaveFileUploaded(ctx context.Context, data []byte, dst string) (*common.Image, error)
+	//1:17:50
+}
