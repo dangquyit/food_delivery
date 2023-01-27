@@ -1,12 +1,11 @@
 package ginupload
 
 import (
-	"fmt"
 	"food_delivery/common"
 	"food_delivery/component/appctx"
+	uploadbusiness "food_delivery/module/upload/business"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strings"
+	"log"
 )
 
 func UploadImage(appCtx appctx.AppContext) func(c *gin.Context) {
@@ -14,10 +13,6 @@ func UploadImage(appCtx appctx.AppContext) func(c *gin.Context) {
 		fileHeader, err := c.FormFile("file")
 
 		if err != nil {
-			panic(common.ErrInvalidRequest(err))
-		}
-
-		if err := c.SaveUploadedFile(fileHeader, fmt.Sprintf("static/%s", fileHeader.Filename)); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
@@ -35,13 +30,14 @@ func UploadImage(appCtx appctx.AppContext) func(c *gin.Context) {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		c.JSON(http.StatusOK, common.SimpleSuccessResponse(common.Image{
-			Id:        0,
-			Url:       "http://localhost:8080/static/" + fileHeader.Filename,
-			Width:     0,
-			Height:    0,
-			CloudName: "local",
-			Extension: fileHeader.Filename[strings.Index(fileHeader.Filename, "."):len(fileHeader.Filename)],
-		}))
+		bsn := uploadbusiness.NewUploadBusiness(appCtx.UploadProvider(), nil)
+		log.Println(folder, fileHeader.Filename)
+		img, err := bsn.Upload(c.Request.Context(), dataBytes, folder, fileHeader.Filename)
+
+		if err != nil {
+			panic(err)
+		}
+
+		c.JSON(200, common.SimpleSuccessResponse(img))
 	}
 }

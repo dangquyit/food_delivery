@@ -20,6 +20,7 @@ func (Image) TableName() string {
 	return "images"
 }
 
+// convert from json type to object
 func (j *Image) Scan(value interface{}) error {
 	bytes, ok := value.([]byte)
 	if !ok {
@@ -35,6 +36,7 @@ func (j *Image) Scan(value interface{}) error {
 	return nil
 }
 
+// convert from object type to json
 func (j *Image) Value() (driver.Value, error) {
 	if j == nil {
 		return nil, nil
