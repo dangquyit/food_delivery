@@ -8,7 +8,6 @@ import (
 	uploadmodel "food_delivery/module/upload/model"
 	"image"
 	"io"
-	"log"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -60,11 +59,11 @@ func (bsn *uploadBusiness) Upload(ctx context.Context, data []byte, folder, file
 }
 
 func getImageDimension(reader io.Reader) (int, int, error) {
-	img, _, err := image.DecodeConfig(reader)
+	img, _, _ := image.DecodeConfig(reader)
 
-	if err != nil {
-		log.Println("err: ", err)
-		return 0, 0, err
-	}
+	//if err != nil {
+	//	log.Println("err: ", err)
+	//	return 0, 0, err
+	//}
 	return img.Width, img.Height, nil
 }
