@@ -9,7 +9,7 @@ import (
 func (s *sqlStorage) CreateUser(ctx context.Context, data *usermodel.UserCreate) error {
 	db := s.db.Begin()
 
-	if err := db.Table(data.TableName()).Create(data).Error; err != nil {
+	if err := db.Table(data.TableName()).Create(&data).Error; err != nil {
 		db.Rollback()
 		return common.ErrDB(err)
 	}

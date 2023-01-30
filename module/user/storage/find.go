@@ -9,7 +9,7 @@ import (
 func (s *sqlStorage) FindUser(ctx context.Context,
 	conditions map[string]interface{},
 	moreInfo ...string) (*usermodel.User, error) {
-	db := s.db.Begin()
+	db := s.db
 
 	for i := range moreInfo {
 		db = db.Preload(moreInfo[i])
