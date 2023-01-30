@@ -3,6 +3,7 @@ package ginuser
 import (
 	"food_delivery/common"
 	"food_delivery/component/appctx"
+	"food_delivery/component/hasher"
 	userbusiness "food_delivery/module/user/business"
 	usermodel "food_delivery/module/user/model"
 	userstorage "food_delivery/module/user/storage"
@@ -19,14 +20,14 @@ func CreateUser(appCtx appctx.AppContext) gin.HandlerFunc {
 		}
 
 		storage := userstorage.NewSQLStorage(appCtx.GetMainDBConnection())
-		business := userbusiness.NewCreateUserBusiness(storage)
-
-		data.Role = "user"
-		data.Mask()
+		md5 := hasher.NewMd5Hash()
+		business := userbusiness.NewCreateUserBusiness(storage, md5)
 
 		if err := business.CreateUser(c.Request.Context(), &data); err != nil {
 			panic(err)
 		}
+
+		data.Mask()
 
 		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data.FakeID))
 	}
