@@ -40,7 +40,7 @@ func main() {
 	r.GET("/profile", middleware.AuthenticateJWT(appCtx), ginuser.FindUser(appCtx))
 	r.POST("/register", ginuser.CreateUser(appCtx))
 
-	restaurants := r.Group("/restaurants")
+	restaurants := r.Group("/restaurants", middleware.AuthenticateJWT(appCtx))
 	restaurants.POST("", restaurantginrestaurant.CreateRestaurant(appCtx))
 
 	restaurants.DELETE("/:id", restaurantginrestaurant.DeleteRestaurant(appCtx))

@@ -37,10 +37,11 @@ func (RestaurantUpdate) TableName() string {
 
 type RestaurantCreate struct {
 	common.SQLModel
-	Name  string         `json:"name" gorm:"column:name;"`
-	Addr  string         `json:"addr" gorm:"column:addr"`
-	Logo  *common.Image  `json:"logo" gorm:"column:logo"`
-	Cover *common.Images `json:"cover" gorm:"column:cover"`
+	Name   string         `json:"name" gorm:"column:name;"`
+	Addr   string         `json:"addr" gorm:"column:addr"`
+	UserId int            `json:"-" gorm:"column:user_id"`
+	Logo   *common.Image  `json:"logo" gorm:"column:logo"`
+	Cover  *common.Images `json:"cover" gorm:"column:cover"`
 }
 
 func (data *RestaurantCreate) Mask(isAdminOrOwner bool) {

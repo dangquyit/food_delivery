@@ -3,6 +3,7 @@ package restaurantginrestaurant
 import (
 	"food_delivery/common"
 	"food_delivery/component/appctx"
+	"food_delivery/component/tokenprovider"
 	restaurantbusiness "food_delivery/module/restaurant/business"
 	restaurantmodel "food_delivery/module/restaurant/model"
 	restaurantstorage "food_delivery/module/restaurant/storage"
@@ -13,8 +14,10 @@ import (
 func CreateRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := appCtx.GetMainDBConnection()
-
+		tokenPayload, _ := c.Get(common.TokenPayloadInJWTRequest)
+		payload := tokenPayload.(*tokenprovider.TokenPayload)
 		var data restaurantmodel.RestaurantCreate
+		data.UserId = payload.UserId
 
 		if err := c.ShouldBind(&data); err != nil {
 			//c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
