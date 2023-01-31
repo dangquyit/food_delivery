@@ -21,7 +21,7 @@ var (
 
 func FindUser(ctx appctx.AppContext) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		tokenPayload, ok := c.Get("tokenPayload")
+		tokenPayload, ok := c.Get(common.TokenPayloadInJWTRequest)
 		if !ok {
 			panic(ErrCannotGetPayload)
 		}

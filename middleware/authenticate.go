@@ -40,7 +40,7 @@ func AuthenticateJWT(appCtx appctx.AppContext) func(c *gin.Context) {
 			panic(err)
 		}
 
-		c.Set("tokenPayload", tokenPayload)
+		c.Set(common.TokenPayloadInJWTRequest, tokenPayload)
 		c.Next()
 	}
 }
