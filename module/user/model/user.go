@@ -48,8 +48,8 @@ func (u *UserCreate) Mask() {
 }
 
 type UserLogin struct {
-	Email    string `json:"email" form:"email" gorm:"email`
-	Password string `json:"password" form:"password" gorm:"password"`
+	Email    string `json:"email" form:"email" gorm:"column:email"`
+	Password string `json:"password" form:"password" gorm:"column:password"`
 }
 
 func (UserLogin) TableName() string {

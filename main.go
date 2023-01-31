@@ -23,6 +23,8 @@ func main() {
 	s3APIKey := os.Getenv("S3APIKey")
 	s3SecretKey := os.Getenv("S3SecretKey")
 	s3Domain := os.Getenv("S3Domain")
+
+	secretKey := os.Getenv("SYSTEM_SECRET")
 	r := gin.Default()
 	if err != nil {
 		return
@@ -30,9 +32,10 @@ func main() {
 
 	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3APIKey, s3SecretKey, s3Domain)
 
-	appCtx := appctx.NewAppCtx(db, s3Provider)
+	appCtx := appctx.NewAppCtx(db, s3Provider, secretKey)
 	r.Use(middleware.Recover(appCtx))
 
+	r.POST("/authenticate", ginuser.Login(appCtx))
 	r.POST("/upload", ginupload.UploadImage(appCtx))
 
 	r.POST("/register", ginuser.CreateUser(appCtx))
