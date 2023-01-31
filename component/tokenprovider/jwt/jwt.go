@@ -40,3 +40,24 @@ func (j *jwtProvider) Generate(data tokenprovider.TokenPayload, expiry int) (*to
 		Created: time.Now(),
 	}, nil
 }
+
+func (j *jwtProvider) Validate(myToken string) (*tokenprovider.TokenPayload, error) {
+	res, err := jwt.ParseWithClaims(myToken, &myClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(j.secret), nil
+	})
+
+	if err != nil {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+
+	if !res.Valid {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+
+	claims, ok := res.Claims.(*myClaims)
+	if !ok {
+		return nil, tokenprovider.ErrInvalidToken
+	}
+
+	return &claims.Playload, nil
+}

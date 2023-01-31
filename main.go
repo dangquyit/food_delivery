@@ -37,7 +37,7 @@ func main() {
 
 	r.POST("/authenticate", ginuser.Login(appCtx))
 	r.POST("/upload", ginupload.UploadImage(appCtx))
-
+	r.GET("/profile", middleware.AuthenticateJWT(appCtx), ginuser.FindUser(appCtx))
 	r.POST("/register", ginuser.CreateUser(appCtx))
 
 	restaurants := r.Group("/restaurants")
