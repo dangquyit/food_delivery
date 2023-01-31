@@ -34,7 +34,7 @@ func NewLoginBusiness(
 }
 
 func (bsn *loginBusiness) Login(ctx context.Context, data *usermodel.UserLogin) (*tokenprovider.Token, error) {
-	user, err := bsn.storeUser.FindUser(ctx, map[string]interface{}{"email": data.Email})
+	user, err := bsn.storeUser.FindUser(ctx, map[string]interface{}{"email": data.Email, "status": 1})
 
 	if err != nil {
 		return nil, usermodel.ErrUsernameOrPassword
