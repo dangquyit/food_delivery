@@ -13,13 +13,14 @@ func DeleteRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := appCtx.GetMainDBConnection()
 		//id, err := strconv.Atoi(c.Param("id"))
+		requester := c.MustGet(common.TokenPayloadInJWTRequest).(common.Requester)
 		uid, err := common.FromBase58(c.Param("id"))
 		if err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
 		store := restaurantstorage.NewSqlStore(db)
-		bsn := restaurantbusiness.NewDeleteRestaurantBusiness(store)
+		bsn := restaurantbusiness.NewDeleteRestaurantBusiness(store, requester)
 
 		if err := bsn.DeleteRestaurant(c.Request.Context(), int(uid.GetLocalID())); err != nil {
 			//c.JSON(http.StatusBadRequest, gin.H{

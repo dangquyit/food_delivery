@@ -26,7 +26,7 @@ func (Restaurant) TableName() string {
 func (r *Restaurant) Mask(isAdminOrOwner bool) {
 	r.GenUID(common.DbTypeRestaurant)
 	if u := r.User; u != nil {
-		u.Mask()
+		u.Mask(false)
 	}
 }
 

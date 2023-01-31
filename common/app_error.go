@@ -84,6 +84,11 @@ func ErrCannotListEntity(entity string, err error) *AppError {
 	)
 }
 
+func ErrNoPermission(err error) *AppError {
+	return NewCustomError(err, "You have no permission",
+		"ErrNoPermission")
+}
+
 func ErrCannotDeleteEntity(entity string, err error) *AppError {
 	return NewCustomError(
 		err,

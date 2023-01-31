@@ -8,3 +8,7 @@ const (
 const (
 	TokenPayloadInJWTRequest = "tokenPayload"
 )
+
+type Requester interface {
+	GetUserId() int
+}
