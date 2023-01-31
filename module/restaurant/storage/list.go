@@ -39,6 +39,10 @@ func (s *sqlStore) List(ctx context.Context,
 		db = db.Offset(offSet)
 	}
 
+	for i := range moreKey {
+		db = db.Preload(moreKey[i])
+	}
+
 	// Query data
 	if err := db.Limit(paging.Limit).Order("id desc").Find(&result).Error; err != nil {
 		return nil, common.ErrDB(err)

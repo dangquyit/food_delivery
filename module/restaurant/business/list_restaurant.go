@@ -21,8 +21,10 @@ func NewListRestaurantBusiness(store ListRestaurantStore) *listRestaurantBusines
 	return &listRestaurantBusiness{store: store}
 }
 
-func (bsn *listRestaurantBusiness) ListRestaurantBusiness(ctx context.Context, filter *restaurantmodel.Filter, paging *common.Paging) ([]restaurantmodel.Restaurant, error) {
-	var result, err = bsn.store.List(ctx, filter, paging)
+func (bsn *listRestaurantBusiness) ListRestaurantBusiness(ctx context.Context,
+	filter *restaurantmodel.Filter,
+	paging *common.Paging) ([]restaurantmodel.Restaurant, error) {
+	result, err := bsn.store.List(ctx, filter, paging, "User")
 	if err != nil {
 		return nil, common.ErrCannotGetEntity(restaurantmodel.EntityName, err)
 	}
