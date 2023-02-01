@@ -42,3 +42,7 @@ type TokenPayload struct {
 func (t *TokenPayload) GetUserId() int {
 	return t.UserId
 }
+
+func (t *TokenPayload) GetRole() string {
+	return t.Role
+}

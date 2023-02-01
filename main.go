@@ -3,10 +3,6 @@ package main
 import (
 	"food_delivery/component/appctx"
 	"food_delivery/component/uploadprovider"
-	"food_delivery/middleware"
-	restaurantginrestaurant "food_delivery/module/restaurant/transport/ginrestaurant"
-	"food_delivery/module/upload/transport/ginupload"
-	"food_delivery/module/user/transport/ginuser"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -33,20 +29,8 @@ func main() {
 	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3APIKey, s3SecretKey, s3Domain)
 
 	appCtx := appctx.NewAppCtx(db, s3Provider, secretKey)
-	r.Use(middleware.Recover(appCtx))
-
-	r.POST("/authenticate", ginuser.Login(appCtx))
-	r.POST("/upload", ginupload.UploadImage(appCtx))
-	r.GET("/profile", middleware.AuthenticateJWT(appCtx), ginuser.FindUser(appCtx))
-	r.POST("/register", ginuser.CreateUser(appCtx))
-
-	restaurants := r.Group("/restaurants", middleware.AuthenticateJWT(appCtx))
-	restaurants.POST("", restaurantginrestaurant.CreateRestaurant(appCtx))
-
-	restaurants.DELETE("/:id", restaurantginrestaurant.DeleteRestaurant(appCtx))
-
-	restaurants.GET("", restaurantginrestaurant.ListRestaurant(appCtx))
-
+	setupRoute(appCtx, r.Group(""))
+	setupAdminRoute(appCtx, r.Group(""))
 	if err := r.Run(); err != nil {
 		return
 	}

@@ -1,27 +1,20 @@
 package common
 
 import (
-	"math/rand"
-	"time"
+	"errors"
+	"github.com/google/uuid"
 )
 
-var letters = []rune("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM")
-
-func randSequence(n int) string {
-	b := make([]rune, n)
-
-	s1 := rand.NewSource(time.Now().UnixNano())
-	r1 := rand.New(s1)
-	for i := range b {
-		b[i] = letters[r1.Intn(99999)%len(letters)]
+func GenUUID() (string, error) {
+	uuidRand, err := uuid.NewRandom()
+	if err != nil {
+		return "", ErrGenerateUUID
 	}
-
-	return string(b)
+	return uuidRand.String(), nil
 }
 
-func GenSalt(length int) string {
-	if length < 0 {
-		length = 50
-	}
-	return randSequence(length)
-}
+var (
+	ErrGenerateUUID = NewCustomError(errors.New("cannot generate uuid"),
+		"cannot generate uuid",
+		"ErrCannotGenerateUUID")
+)

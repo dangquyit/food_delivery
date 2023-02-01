@@ -33,7 +33,10 @@ func (bsn *createUserBusiness) CreateUser(ctx context.Context, data *usermodel.U
 		return usermodel.ErrEmailExisted
 	}
 
-	salt := common.GenSalt(50)
+	salt, err := common.GenUUID()
+	if err != nil {
+		return err
+	}
 	data.Password = bsn.hasher.Hash(data.Password + salt)
 	data.Salt = salt
 	data.Role = "user"

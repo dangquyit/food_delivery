@@ -11,4 +11,5 @@ const (
 
 type Requester interface {
 	GetUserId() int
+	GetRole() string
 }
