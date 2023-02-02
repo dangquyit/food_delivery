@@ -16,6 +16,7 @@ type User struct {
 	FirstName string        `json:"first_name" gorm:"column:first_name"`
 	Phone     string        `json:"-" gorm:"column:phone"`
 	Role      string        `json:"role" gorm:"column:role"`
+	Status    int           `json:"status" gorm:"column:status;default:1"`
 	Avatar    *common.Image `json:"avatar,omitempty" gorm:"column:avatar;type=json"`
 }
 
@@ -35,6 +36,7 @@ type UserCreate struct {
 	FirstName string        `json:"first_name" gorm:"column:first_name"`
 	Phone     string        `json:"phone" gorm:"column:phone"`
 	Role      string        `json:"-" gorm:"column:role"`
+	Status    int           `json:"status" gorm:"column:status;default:1"`
 	Salt      string        `json:"-" gorm:"column:salt"`
 	Avatar    *common.Image `json:"avatar,omitempty" gorm:"column:avatar;type=json"`
 }

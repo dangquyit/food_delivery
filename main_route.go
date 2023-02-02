@@ -26,5 +26,6 @@ func setupRoute(appCtx appctx.AppContext, r *gin.RouterGroup) {
 	restaurants.GET("", restaurantginrestaurant.ListRestaurant(appCtx))
 
 	restaurants.POST("/:id/like", restaurantlikegin.UserLikeRestaurant(appCtx))
-	restaurants.POST("/:id/unlike", restaurantlikegin.UserUnLikeRestaurant(appCtx))
+	restaurants.DELETE("/:id/like", restaurantlikegin.UserUnLikeRestaurant(appCtx))
+	restaurants.GET("/:id/like", restaurantlikegin.ListUserLikeRestaurantHandler(appCtx))
 }
