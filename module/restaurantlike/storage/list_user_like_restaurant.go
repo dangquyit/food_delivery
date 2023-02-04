@@ -5,7 +5,6 @@ import (
 	restaurantlikemodel "food_delivery/module/restaurantlike/model"
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/net/context"
-	"log"
 	"time"
 )
 
@@ -51,9 +50,7 @@ func (s *sqlStorage) ListUserLikeRestaurant(ctx context.Context,
 	}
 
 	users := make([]common.SimpleUser, len(result))
-
-	log.Println(result)
-
+	
 	for i, v := range result {
 		result[i].User.CreatedAt = v.CreatedAt
 		result[i].User.UpdatedAt = nil

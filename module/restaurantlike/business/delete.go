@@ -3,24 +3,34 @@ package restaurantlikebusiness
 import (
 	"context"
 	restaurantlikemodel "food_delivery/module/restaurantlike/model"
+	"log"
 )
+
+type DeclikedCountResStore interface {
+	DecreaseLikeCount(ctx context.Context, id int) error
+}
 
 type DeleteRestaurantLikeStore interface {
 	DeleteRestaurantLike(ctx context.Context, data *restaurantlikemodel.Like) error
 }
 
 type deleteRestaurantLikeBusiness struct {
-	store DeleteRestaurantLikeStore
+	store    DeleteRestaurantLikeStore
+	decStore DeclikedCountResStore
 }
 
-func NewDeleteBusiness(store DeleteRestaurantLikeStore) *deleteRestaurantLikeBusiness {
-	return &deleteRestaurantLikeBusiness{store: store}
+func NewDeleteBusiness(store DeleteRestaurantLikeStore, decStore DeclikedCountResStore) *deleteRestaurantLikeBusiness {
+	return &deleteRestaurantLikeBusiness{store: store, decStore: decStore}
 }
 
 func (bsn *deleteRestaurantLikeBusiness) DeleteLikeRestaurant(ctx context.Context,
 	data *restaurantlikemodel.Like) error {
 	if err := bsn.store.DeleteRestaurantLike(ctx, data); err != nil {
 		return restaurantlikemodel.ErrCannotUnlikeRestaurant(err)
+	}
+
+	if err := bsn.decStore.DecreaseLikeCount(ctx, data.RestaurantId); err != nil {
+		log.Println(err)
 	}
 	return nil
 }
