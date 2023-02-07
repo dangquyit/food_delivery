@@ -2,6 +2,7 @@ package restaurantlikebusiness
 
 import (
 	"context"
+	"food_delivery/component/asyncjob"
 	restaurantlikemodel "food_delivery/module/restaurantlike/model"
 	"log"
 )
@@ -29,8 +30,13 @@ func (bsn *deleteRestaurantLikeBusiness) DeleteLikeRestaurant(ctx context.Contex
 		return restaurantlikemodel.ErrCannotUnlikeRestaurant(err)
 	}
 
-	if err := bsn.decStore.DecreaseLikeCount(ctx, data.RestaurantId); err != nil {
-		log.Println(err)
+	j := asyncjob.NewJob(func(ctx context.Context) error {
+		return bsn.decStore.DecreaseLikeCount(ctx, data.RestaurantId)
+	})
+
+	if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
+		log.Println("Unlike restaurant err", err)
 	}
+
 	return nil
 }

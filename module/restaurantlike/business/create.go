@@ -2,6 +2,7 @@ package restaurantlikebusiness
 
 import (
 	"context"
+	"food_delivery/component/asyncjob"
 	restaurantlikemodel "food_delivery/module/restaurantlike/model"
 	"log"
 )
@@ -29,9 +30,15 @@ func (bsn *createRestaurantLikeBusiness) CreateLikeRestaurant(ctx context.Contex
 		return restaurantlikemodel.ErrCannotLikeRestaurant(err)
 	}
 
-	if err := bsn.incStore.IncreaseLikeCount(ctx, data.RestaurantId); err != nil {
-		log.Println(err)
+	// Start routine
+	j := asyncjob.NewJob(func(ctx context.Context) error {
+		return bsn.incStore.IncreaseLikeCount(ctx, data.RestaurantId)
+	})
+
+	if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
+		log.Println("Like restaurant err", err)
 	}
+	// End routine
 
 	return nil
 }
