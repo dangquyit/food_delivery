@@ -5,7 +5,6 @@ import (
 	"food_delivery/component/appctx"
 	restaurantbusiness "food_delivery/module/restaurant/business"
 	restaurantmodel "food_delivery/module/restaurant/model"
-	restaurantrepository "food_delivery/module/restaurant/repository"
 	restaurantstorage "food_delivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -34,14 +33,9 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		}
 
 		store := restaurantstorage.NewSqlStore(db)
-		repo := restaurantrepository.NewListRestaurantRepo(store)
-		bsn := restaurantbusiness.NewListRestaurantBusiness(repo)
+		bsn := restaurantbusiness.NewListRestaurantBusiness(store)
 		result, err := bsn.ListRestaurantBusiness(c, &filter, &paging)
 		if err != nil {
-			//c.JSON(http.StatusBadRequest, gin.H{
-			//	"error": err.Error(),
-			//})
-			//return
 			panic(err)
 		}
 
