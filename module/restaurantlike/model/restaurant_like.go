@@ -32,3 +32,7 @@ func ErrCannotUnlikeRestaurant(err error) *common.AppError {
 		"cannot unlike this restaurant",
 		"ErrCannotUnlikeRestaurant")
 }
+
+func (l Like) GetRestaurantId() int {
+	return l.RestaurantId
+}

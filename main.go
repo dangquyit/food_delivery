@@ -3,6 +3,8 @@ package main
 import (
 	"food_delivery/component/appctx"
 	"food_delivery/component/uploadprovider"
+	localpb "food_delivery/pubsub/local_pubsub"
+	"food_delivery/subscriber"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,6 +23,7 @@ func main() {
 	s3Domain := os.Getenv("S3Domain")
 
 	secretKey := os.Getenv("SYSTEM_SECRET")
+
 	r := gin.Default()
 	if err != nil {
 		return
@@ -28,7 +31,13 @@ func main() {
 
 	s3Provider := uploadprovider.NewS3Provider(s3BucketName, s3Region, s3APIKey, s3SecretKey, s3Domain)
 
-	appCtx := appctx.NewAppCtx(db, s3Provider, secretKey)
+	pb := localpb.NewPubSub()
+	appCtx := appctx.NewAppCtx(db, s3Provider, secretKey, pb)
+
+	// Setup subcribe
+	//subscriber.Setup(appCtx, context.Background())
+	
+	_ = subscriber.NewEngine(appCtx).Start()
 	setupRoute(appCtx, r.Group(""))
 	setupAdminRoute(appCtx, r.Group(""))
 	if err := r.Run(); err != nil {

@@ -2,26 +2,23 @@ package restaurantlikebusiness
 
 import (
 	"context"
-	"food_delivery/component/asyncjob"
+	"food_delivery/common"
 	restaurantlikemodel "food_delivery/module/restaurantlike/model"
+	"food_delivery/pubsub"
 	"log"
 )
-
-type DeclikedCountResStore interface {
-	DecreaseLikeCount(ctx context.Context, id int) error
-}
 
 type DeleteRestaurantLikeStore interface {
 	DeleteRestaurantLike(ctx context.Context, data *restaurantlikemodel.Like) error
 }
 
 type deleteRestaurantLikeBusiness struct {
-	store    DeleteRestaurantLikeStore
-	decStore DeclikedCountResStore
+	store DeleteRestaurantLikeStore
+	ps    pubsub.Pubsub
 }
 
-func NewDeleteBusiness(store DeleteRestaurantLikeStore, decStore DeclikedCountResStore) *deleteRestaurantLikeBusiness {
-	return &deleteRestaurantLikeBusiness{store: store, decStore: decStore}
+func NewDeleteBusiness(store DeleteRestaurantLikeStore, ps pubsub.Pubsub) *deleteRestaurantLikeBusiness {
+	return &deleteRestaurantLikeBusiness{store: store, ps: ps}
 }
 
 func (bsn *deleteRestaurantLikeBusiness) DeleteLikeRestaurant(ctx context.Context,
@@ -30,13 +27,16 @@ func (bsn *deleteRestaurantLikeBusiness) DeleteLikeRestaurant(ctx context.Contex
 		return restaurantlikemodel.ErrCannotUnlikeRestaurant(err)
 	}
 
-	j := asyncjob.NewJob(func(ctx context.Context) error {
-		return bsn.decStore.DecreaseLikeCount(ctx, data.RestaurantId)
-	})
-
-	if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
-		log.Println("Unlike restaurant err", err)
+	if err := bsn.ps.Publish(ctx, common.TopicUserUnLikeRestaurant, pubsub.NewMessage(data)); err != nil {
+		log.Println(err)
 	}
+	//j := asyncjob.NewJob(func(ctx context.Context) error {
+	//	return bsn.decStore.DecreaseLikeCount(ctx, data.RestaurantId)
+	//})
+	//
+	//if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
+	//	log.Println("Unlike restaurant err", err)
+	//}
 
 	return nil
 }

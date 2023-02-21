@@ -9,6 +9,11 @@ const (
 	TokenPayloadInJWTRequest = "tokenPayload"
 )
 
+const (
+	TopicUserLikeRestaurant   = "TopicUserLikeRestaurant"
+	TopicUserUnLikeRestaurant = "TopicUserUnLikeRestaurant"
+)
+
 type Requester interface {
 	GetUserId() int
 	GetRole() string
